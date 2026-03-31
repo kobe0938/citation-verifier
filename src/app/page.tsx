@@ -166,6 +166,14 @@ export default function Home() {
         >
           Semantic Scholar
         </a>
+        . For entries marked as &ldquo;Check Needed&rdquo;, you can verify manually on{" "}
+        <a
+          href="https://scholar.google.com/schhp"
+          target="_blank"
+          className="underline text-blue-600"
+        >
+          Google Scholar
+        </a>
         .
       </p>
 
