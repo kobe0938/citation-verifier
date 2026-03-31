@@ -191,12 +191,23 @@ export default function Home() {
           Load Example
         </button>
         {results.length > 0 && (
-          <button
-            onClick={exportCsv}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-          >
-            Export CSV
-          </button>
+          <>
+            <button
+              onClick={exportCsv}
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+            >
+              Export CSV
+            </button>
+            <button
+              onClick={() => {
+                const allExpanded = expanded.size === results.length;
+                setExpanded(allExpanded ? new Set() : new Set(results.map((_, i) => i)));
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+            >
+              {expanded.size === results.length ? "Collapse All" : "Expand All"}
+            </button>
+          </>
         )}
       </div>
 
@@ -288,6 +299,17 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      <footer className="mt-12 pb-8 text-center text-sm text-gray-400">
+        Created by{" "}
+        <a
+          href="https://github.com/kobe0938"
+          target="_blank"
+          className="text-gray-500 hover:text-gray-700 underline"
+        >
+          Kobe Chen
+        </a>
+      </footer>
     </main>
   );
 }
