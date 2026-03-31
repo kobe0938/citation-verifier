@@ -1,0 +1,33 @@
+{
+  "name": "citation-verifier",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kobe0938/citation-verifier.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kobe0938/citation-verifier/issues"
+  },
+  "homepage": "https://github.com/kobe0938/citation-verifier#readme",
+  "description": "",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "next": "^16.2.1",
+    "postcss": "^8.5.8",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2"
+  }
+}
