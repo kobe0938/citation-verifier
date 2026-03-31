@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 
 interface Result {
   bibKey: string;
-  status: "ok" | "mismatch" | "not_found" | "error";
+  status: "ok" | "mismatch" | "not_found" | "url_ok" | "url_dead" | "error";
   ourTitle: string;
   ourYear: string;
   ourAuthors: string;
@@ -22,15 +22,19 @@ interface Result {
 
 const STATUS_STYLES: Record<string, string> = {
   ok: "bg-green-100 text-green-800",
+  url_ok: "bg-blue-100 text-blue-800",
   mismatch: "bg-yellow-100 text-yellow-800",
   not_found: "bg-red-100 text-red-800",
+  url_dead: "bg-red-100 text-red-800",
   error: "bg-gray-100 text-gray-800",
 };
 
 const STATUS_LABELS: Record<string, string> = {
   ok: "OK",
+  url_ok: "URL OK",
   mismatch: "Check Needed",
   not_found: "Not Found",
+  url_dead: "URL Dead",
   error: "Error",
 };
 
@@ -145,8 +149,9 @@ export default function Home() {
   }
 
   const okCount = results.filter((r) => r.status === "ok").length;
+  const urlOkCount = results.filter((r) => r.status === "url_ok").length;
   const mismatchCount = results.filter((r) => r.status === "mismatch").length;
-  const notFoundCount = results.filter((r) => r.status === "not_found").length;
+  const notFoundCount = results.filter((r) => r.status === "not_found" || r.status === "url_dead").length;
   const errorCount = results.filter((r) => r.status === "error").length;
 
   return (
@@ -198,8 +203,13 @@ export default function Home() {
       {results.length > 0 && (
         <div className="mt-6 mb-4 flex gap-4 text-sm">
           <span className="px-2 py-1 bg-green-100 text-green-800 rounded">OK: {okCount}</span>
+          {urlOkCount > 0 && (
+            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">URL OK: {urlOkCount}</span>
+          )}
           <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded">Check: {mismatchCount}</span>
-          <span className="px-2 py-1 bg-red-100 text-red-800 rounded">Not Found: {notFoundCount}</span>
+          {notFoundCount > 0 && (
+            <span className="px-2 py-1 bg-red-100 text-red-800 rounded">Not Found: {notFoundCount}</span>
+          )}
           {errorCount > 0 && (
             <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded">Error: {errorCount}</span>
           )}
@@ -225,37 +235,53 @@ export default function Home() {
 
             {expanded.has(i) && (
               <div className="px-4 pb-4 text-sm border-t border-gray-100 pt-3">
-                <div className="grid grid-cols-[auto_1fr_1fr] gap-x-6 gap-y-1">
-                  <div className="font-medium text-gray-500"></div>
-                  <div className="font-medium text-gray-500">Your BibTeX</div>
-                  <div className="font-medium text-gray-500">Semantic Scholar</div>
-
-                  <div className="font-medium">Title {r.titleMatch === "OK" ? "✓" : r.titleMatch === "MISMATCH" ? "✗" : ""}</div>
-                  <div>{r.ourTitle}</div>
-                  <div>{r.s2Title || "—"}</div>
-
-                  <div className="font-medium">Year {r.yearMatch === "OK" ? "✓" : r.yearMatch === "MISMATCH" ? "✗" : ""}</div>
-                  <div>{r.ourYear}</div>
-                  <div>{r.s2Year || "—"}</div>
-
-                  <div className="font-medium">Authors {r.authorMatch === "OK" ? "✓" : r.authorMatch === "MISMATCH" ? "✗" : ""}</div>
-                  <div className="break-words">{r.ourAuthors}</div>
-                  <div className="break-words">{r.s2Authors || "—"}</div>
-                </div>
-
-                {(r.s2Venue || r.s2Arxiv || r.s2Doi || r.s2Url) && (
-                  <div className="mt-3 pt-2 border-t border-gray-100 text-gray-600 space-y-1">
-                    {r.s2Venue && <div><span className="font-medium">Venue:</span> {r.s2Venue}</div>}
-                    {r.s2Arxiv && <div><span className="font-medium">ArXiv:</span> {r.s2Arxiv}</div>}
-                    {r.s2Doi && <div><span className="font-medium">DOI:</span> {r.s2Doi}</div>}
+                {(r.status === "url_ok" || r.status === "url_dead") ? (
+                  <div className="space-y-1 text-gray-600">
+                    <div><span className="font-medium">Type:</span> Web resource (blog, dataset, or misc)</div>
                     {r.s2Url && (
                       <div>
-                        <a href={r.s2Url} target="_blank" className="text-blue-600 underline">
-                          View on Semantic Scholar
-                        </a>
+                        <span className="font-medium">URL:</span>{" "}
+                        <a href={r.s2Url} target="_blank" className="text-blue-600 underline break-all">{r.s2Url}</a>
+                        {r.status === "url_ok" ? " (reachable)" : " (not reachable)"}
                       </div>
                     )}
+                    {r.s2Title && <div className="text-gray-500 italic">{r.s2Title}</div>}
                   </div>
+                ) : (
+                  <>
+                    <div className="grid grid-cols-[auto_1fr_1fr] gap-x-6 gap-y-1">
+                      <div className="font-medium text-gray-500"></div>
+                      <div className="font-medium text-gray-500">Your BibTeX</div>
+                      <div className="font-medium text-gray-500">Semantic Scholar</div>
+
+                      <div className="font-medium">Title {r.titleMatch === "OK" ? "✓" : r.titleMatch === "MISMATCH" ? "✗" : ""}</div>
+                      <div>{r.ourTitle}</div>
+                      <div>{r.s2Title || "—"}</div>
+
+                      <div className="font-medium">Year {r.yearMatch === "OK" ? "✓" : r.yearMatch === "MISMATCH" ? "✗" : ""}</div>
+                      <div>{r.ourYear}</div>
+                      <div>{r.s2Year || "—"}</div>
+
+                      <div className="font-medium">Authors {r.authorMatch === "OK" ? "✓" : r.authorMatch === "MISMATCH" ? "✗" : ""}</div>
+                      <div className="break-words">{r.ourAuthors}</div>
+                      <div className="break-words">{r.s2Authors || "—"}</div>
+                    </div>
+
+                    {(r.s2Venue || r.s2Arxiv || r.s2Doi || r.s2Url) && (
+                      <div className="mt-3 pt-2 border-t border-gray-100 text-gray-600 space-y-1">
+                        {r.s2Venue && <div><span className="font-medium">Venue:</span> {r.s2Venue}</div>}
+                        {r.s2Arxiv && <div><span className="font-medium">ArXiv:</span> {r.s2Arxiv}</div>}
+                        {r.s2Doi && <div><span className="font-medium">DOI:</span> {r.s2Doi}</div>}
+                        {r.s2Url && (
+                          <div>
+                            <a href={r.s2Url} target="_blank" className="text-blue-600 underline">
+                              View on Semantic Scholar
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             )}
