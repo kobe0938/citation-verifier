@@ -4,7 +4,7 @@ A web app that verifies BibTeX citations against [Semantic Scholar](https://www.
 
 **Live:** [citation-verifier-lime.vercel.app](https://citation-verifier-lime.vercel.app)
 
-<video src="https://github.com/kobe0938/citation-verifier/raw/master/demo.mp4" controls width="100%"></video>
+https://github.com/kobe0938/citation-verifier/raw/master/demo.mp4
 
 ## What it does
 
