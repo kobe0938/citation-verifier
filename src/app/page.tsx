@@ -317,6 +317,22 @@ export default function Home() {
         >
           Kobe Chen
         </a>
+        {" | "}
+        <a
+          href="https://github.com/kobe0938/citation-verifier"
+          target="_blank"
+          className="text-gray-500 hover:text-gray-700 underline"
+        >
+          GitHub
+        </a>
+        {" | "}
+        <a
+          href="https://x.com/kobe0938"
+          target="_blank"
+          className="text-gray-500 hover:text-gray-700 underline"
+        >
+          X
+        </a>
       </footer>
     </main>
   );
